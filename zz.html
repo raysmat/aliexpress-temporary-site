@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <title>Customizable Pricing Component</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      font-size: 16px;
+    }
+    body {
+      background: linear-gradient(135deg, #f8f9fe 0%, #ffffff 100%);
+      font-family: "Open Sans", sans-serif;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: #2c3e50;
+      position: relative;
+      padding-bottom: 80px;
+    }
+    .brand-logo {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      width: 100px;
+      height: auto;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+    }
+    header {
+      margin: 8rem 0 3rem 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.8rem;
+      font-family: "Montserrat", sans-serif;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 1.3rem;
+      color: #7f8c8d;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    .toggle {
+      margin-top: 1.5rem;
+      color: #7f8c8d;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .toggle-btn {
+      position: relative;
+    }
+    .checkbox {
+      display: none;
+    }
+    .sub {
+      background: linear-gradient(135deg, rgba(74, 108, 233, 1) 0%, rgba(83, 126, 241, 1) 100%);
+      display: flex;
+      align-items: center;
+      height: 2rem;
+      width: 4rem;
+      border-radius: 2rem;
+      padding: 0.3rem;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(74, 108, 233, 0.2);
+    }
+    .circle {
+      background-color: #fff;
+      height: 1.6rem;
+      width: 1.6rem;
+      border-radius: 50%;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1));
+    }
+    .checkbox:checked + .sub {
+      background: linear-gradient(135deg, rgba(46, 204, 113, 1) 0%, rgba(126, 211, 33, 1) 100%);
+    }
+    .checkbox:checked + .sub .circle {
+      transform: translateX(2rem);
+    }
+    .cards {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      padding: 2rem 0;
+      margin-bottom: 4rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      color: #2c3e50;
+      border-radius: 1.2rem;
+      border: 1px solid rgba(236, 240, 241, 0.5);
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      width: 320px;
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      box-shadow: 0 12px 30px -10px rgba(74, 108, 233, 0.15);
+      opacity: 0.9;
+    }
+    .card:hover {
+      opacity: 1;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px -10px rgba(74, 108, 233, 0.25);
+    }
+    .card.active {
+      background: linear-gradient(135deg, rgba(74, 108, 233, 0.95) 0%, rgba(83, 126, 241, 0.95) 100%);
+      transform: scale(1.05) translateY(-10px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 25px 50px -15px rgba(74, 108, 233, 0.35);
+      opacity: 1;
+    }
+    .card.active::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      pointer-events: none;
+    }
+    ul {
+      margin: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    ul li {
+      list-style-type: none;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 0.8rem 0;
+      position: relative;
+    }
+    ul li.price {
+      font-size: 3.2rem;
+      color: #2c3e50;
+      font-family: "Montserrat", sans-serif;
+      padding: 1.5rem 0;
+      margin-bottom: 1rem;
+    }
+    .pack {
+      font-size: 1.4rem;
+      font-family: "Montserrat", sans-serif;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+    .bottom-bar {
+      border-bottom: 1px solid rgba(236, 240, 241, 0.8);
+      padding-bottom: 1.2rem;
+    }
+    .card.active .bottom-bar {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .feature-text {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+      transition: color 0.3s ease;
+    }
+    .card.active .feature-text {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .btn {
+      margin-top: 1.5rem;
+      height: 3rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 0.8rem;
+      background: linear-gradient(135deg, rgba(74, 108, 233, 1) 0%, rgba(83, 126, 241, 1) 100%);
+      color: #fff;
+      border: 0;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      font-size: 1.1rem;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: 0.5s;
+    }
+    .btn:hover::before {
+      left: 100%;
+    }
+    .btn:hover {
+      box-shadow: 0 8px 25px rgba(74, 108, 233, 0.3);
+    }
+    .active-btn {
+      background: #fff;
+      color: #4a6ce9;
+    }
+    footer {
+      background: rgba(255, 255, 255, 0);
+      width: 100%;
+      padding: 1.8rem;
+      text-align: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      position: fixed;
+      bottom: 0;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.03);
+      z-index: 10;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .footer-links a {
+      color: #000000;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .footer-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4a6ce9;
+      transition: width 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: #4a6ce9;
+    }
+    .footer-links a:hover::after {
+      width: 100%;
+    }
+    @media (max-width: 768px) {
+      body {
+        padding: 0 1.5rem 80px 1.5rem;
+      }
+      .brand-logo {
+        top: 20px;
+        left: 20px;
+        width: 80px;
+      }
+      header {
+        margin: 6rem 0 2rem 0;
+      }
+      h1 {
+        font-size: 2.2rem;
+      }
+      .cards {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .card {
+        width: 100%;
+        max-width: 400px;
+      }
+      .card.active {
+        transform: scale(1.02);
+      }
+    }
+  </style>
+</head>
+<body>
+  <img src="aliexppres/R.png" alt="Brand Logo" class="brand-logo" />
+  
+  <header>
+    <h1>Choose Your Perfect Plan</h1>
+    <p class="subtitle">Select the ideal solution that matches your business requirements.</p>
+    
+    <div class="toggle">
+      <label>Annual Billing</label>
+      <div class="toggle-btn">
+        <input type="checkbox" class="checkbox" id="checkbox" />
+        <label class="sub" id="sub" for="checkbox">
+          <div class="circle"></div>
+        </label>
+      </div>
+      <label>Monthly Billing</label>
+    </div>
+  </header>
+
+  <div class="cards">
+    <div class="card" id="basic-card">
+      <ul>
+        <li class="pack">Basic</li>
+        <li id="basic" class="price bottom-bar">&dollar;199.99</li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="500 GB Secure Storage" data-annual="1 TB Secure Storage">500 GB Secure Storage</span></li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="Up to 2 Users" data-annual="Up to 5 Users">Up to 2 Users</span></li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="3 GB Transfer Limit" data-annual="10 GB Transfer Limit">3 GB Transfer Limit</span></li>
+        <li class="bottom-bar"><span class="feature-text">24/7 Support</span></li>
+        <li class="bottom-bar"><span class="feature-text">Basic Analytics</span></li>
+        <li><button class="btn">Start Basic Plan</button></li>
+      </ul>
+    </div>
+    
+    <div class="card active" id="professional-card">
+      <ul>
+        <li class="pack">Professional</li>
+        <li id="professional" class="price bottom-bar">&dollar;249.99</li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="1 TB Secure Storage" data-annual="2 TB Secure Storage">1 TB Secure Storage</span></li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="Up to 5 Users" data-annual="Up to 10 Users">Up to 5 Users</span></li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="10 GB Transfer Limit" data-annual="20 GB Transfer Limit">10 GB Transfer Limit</span></li>
+        <li class="bottom-bar"><span class="feature-text">Priority Support</span></li>
+        <li class="bottom-bar"><span class="feature-text">Advanced Analytics</span></li>
+        <li><button class="btn active-btn">Start Professional Plan</button></li>
+      </ul>
+    </div>
+    
+    <div class="card" id="master-card">
+      <ul>
+        <li class="pack">Enterprise</li>
+        <li id="master" class="price bottom-bar">&dollar;399.99</li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="2 TB Secure Storage" data-annual="5 TB Secure Storage">2 TB Secure Storage</span></li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="Unlimited Users" data-annual="Unlimited Users + Teams">Unlimited Users</span></li>
+        <li class="bottom-bar"><span class="feature-text" data-monthly="20 GB Transfer Limit" data-annual="50 GB Transfer Limit">20 GB Transfer Limit</span></li>
+        <li class="bottom-bar"><span class="feature-text">Dedicated Support</span></li>
+        <li class="bottom-bar"><span class="feature-text">Custom Analytics</span></li>
+        <li><button class="btn">Contact Sales</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#">Privacy Center</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+      <a href="#">Data Protection</a>
+    </div>
+  </footer>
+  <script>
+    const prices = {
+      basic: { monthly: 19.99, annually: 199.99 },
+      professional: { monthly: 24.99, annually: 249.99 },
+      master: { monthly: 39.99, annually: 399.99 }
+    };
+
+    const checkbox = document.getElementById("checkbox");
+    const cards = {
+      basic: document.getElementById("basic-card"),
+      professional: document.getElementById("professional-card"),
+      master: document.getElementById("master-card")
+    };
+
+    // Smooth card switching
+    Object.keys(cards).forEach(plan => {
+      cards[plan].addEventListener('click', () => {
+        Object.values(cards).forEach(card => {
+          card.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          card.classList.remove('active');
+          card.querySelector('.btn').classList.remove('active-btn');
+        });
+        cards[plan].classList.add('active');
+        cards[plan].querySelector('.btn').classList.add('active-btn');
+      });
+    });
+
+    // Price and feature update with smooth transition
+    checkbox.addEventListener("change", () => {
+      const isMonthly = checkbox.checked;
+
+      // Update prices
+      Object.keys(prices).forEach(plan => {
+        const priceElement = document.getElementById(plan);
+        priceElement.style.opacity = '0';
+        setTimeout(() => {
+          priceElement.innerHTML = `&dollar;${(isMonthly ? prices[plan].monthly : prices[plan].annually).toFixed(2)}`;
+          priceElement.style.opacity = '1';
+        }, 300);
+      });
+
+      // Update features
+      const featureTexts = document.querySelectorAll('.feature-text');
+      featureTexts.forEach(feature => {
+        const monthlyText = feature.getAttribute('data-monthly');
+        const annualText = feature.getAttribute('data-annual');
+        if (monthlyText && annualText) {
+          feature.textContent = isMonthly ? monthlyText : annualText;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
